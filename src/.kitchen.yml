@@ -1,0 +1,72 @@
+---
+driver:
+  name: vagrant
+  box_check_update: false
+  customize:
+    natdnshostresolver1: 'on'
+    natdnsproxy1: 'on'
+
+provisioner:
+    name: chef_zero
+    client_rb:
+      log_level: ':info'
+    attributes:
+      ibmc:
+        main:
+          host: 'ibmc-host'
+          port: 443
+          username: 'username'
+          password: 'password'
+        driver:
+          image_uri: 'nfs://host/data/nfs/NIC(X722)-Electrical-05022FTM-FW(3.33).zip'
+          sign_uri: 'nfs://host/data/nfs/NIC(X722)-Electrical-05022FTM-FW(3.33).zip.asc'
+        sp:
+          image_uri: 'nfs://host/data/nfs/fake-test.zip'
+          sign_uri: 'nfs://host/data/nfs/fake-test.zip.asc'
+        firmware:
+          image_uri: 'nfs://host/data/nfs/2288H_V5_5288_V5-iBMC-V318.hpm'
+        vm:
+          image: 'nfs://host/data/nfs/sample.iso'
+        license:
+          uri: 'nfs://host/data/nfs/LIC2288H_V5_2_20180905LTM65C.xml'
+        os:
+          config:
+            InstallMode: Recommended
+            OSType: CentOS7U5
+            BootType: UEFIBoot
+            RootPwd: FILL ME IN
+            HostName: chef-test
+            AutoPosition: true
+            Autopart: true
+            Language: en-US.UTF-8
+            TimeZone: Asia/Shanghai
+            Keyboard: us
+            CheckFirmware: false
+            Software:
+            - FileName: iBMA
+            NetCfg:
+            - Device:
+                Name: eth0
+                MAC: 00:23:5A:15:99:42
+              IPv4Addresses:
+              - Address: 10.10.10.10
+                SubnetMask: 255.255.0.0
+                Gateway: 10.10.10.1
+                AddressOrigin: Static
+            Packages:
+            - PackageName:
+              - gcc
+              PatternName:
+              - base
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-14.04
+  - name: centos-7.3
+
+suites:
+  - name: default
+    run_list:
+      - recipe[ibmc_test::default]

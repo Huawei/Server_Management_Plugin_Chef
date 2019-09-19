@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+source 'https://supermarket.chef.io'
+
+metadata
+
+group :integration do
+  cookbook 'ibmc_test', path: './test/fixtures/cookbooks/ibmc_test'
+end
